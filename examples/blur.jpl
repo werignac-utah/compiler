@@ -1,0 +1,25 @@
+type col = {float, float, float, float}
+type pict = col[,]
+
+fn blur_pixel(y : int, x : int, size_y : int, size_x : int, to_blur[H,W] : pict) : col {
+    let kernel = array[i : size_y, j : size_x] \
+        y + i - (size_y / 2) >= 0 && y + i - (size_y / 2) < H \
+        && x + j - (size_x / 2) >= 0 && x + j - (size_x / 2) < W
+    
+    let adj_pixel_count = to_float(sum[i : size_y, j : size_x] if kernel[i,j] then 1 else 0)
+
+    let blur_col_r = sum[i : size_y, j : size_x] if kernel[i,j] then to_blur[y + i - (size_y / 2), x + j - (size_x / 2)]{0} else 0.
+    let blur_col_g = sum[i : size_y, j : size_x] if kernel[i,j] then to_blur[y + i - (size_y / 2), x + j - (size_x / 2)]{1} else 0.
+    let blur_col_b = sum[i : size_y, j : size_x] if kernel[i,j] then to_blur[y + i - (size_y / 2), x + j - (size_x / 2)]{2} else 0.
+    let blur_col_a = sum[i : size_y, j : size_x] if kernel[i,j] then to_blur[y + i - (size_y / 2), x + j - (size_x / 2)]{3} else 0.
+
+    return {blur_col_r / adj_pixel_count, blur_col_g / adj_pixel_count, blur_col_b / adj_pixel_count, blur_col_a / adj_pixel_count}
+}
+
+fn blur(to_blur[H,W] : pict) : pict {
+    let horiz_blur = array[i : H, j : W] blur_pixel(i, j, 1, 3, to_blur)
+    return array[i : H, j : W] blur_pixel(i, j, 3, 1, horiz_blur)
+}
+
+read image "sample.png" to blur_im[H, W]
+write image blur(blur_im) to "sample-blurry.png"

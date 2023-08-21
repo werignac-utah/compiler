@@ -1,0 +1,13 @@
+type col = {float, float, float, float}
+type pict = col[,]
+
+fn invertPixel(colToInv : col) : col {
+    return {1. - colToInv{0}, 1. - colToInv{1}, 1. - colToInv{2}, colToInv{3}}
+}
+
+fn invert (to_invert[H, W] : pict) : pict {
+    return array[i : H, j : W] invertPixel(to_invert[i, j])
+}
+
+read image "sample.png" to to_inv[H, W]
+write image invert(to_inv) to "sample-inverted.png"

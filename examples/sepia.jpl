@@ -1,0 +1,25 @@
+type col = {float, float, float, float}
+type pict = col[,]
+
+let s_filter_r = {0.393, 0.769, 0.189}
+let s_filter_g = {0.349, 0.686, 0.168}
+let s_filter_b = {0.272, 0.534, 0.131}
+
+fn clamp(n : float) : float {
+    return if n > 1. then 1. else n
+}
+
+fn sepia_pixel(col_in : col) : col {
+    let sep_col_r = s_filter_r{0} * col_in{0} + s_filter_r{1} * col_in{1} + s_filter_r{2} * col_in{2}
+    let sep_col_g = s_filter_g{0} * col_in{0} + s_filter_g{1} * col_in{1} + s_filter_g{2} * col_in{2}
+    let sep_col_b = s_filter_b{0} * col_in{0} + s_filter_b{1} * col_in{1} + s_filter_b{2} * col_in{2}
+    let sep_col = {clamp(sep_col_r), clamp(sep_col_g), clamp(sep_col_b), col_in{3}}
+    return sep_col
+}
+
+fn sepia(to_sepia[H, W] : pict) : pict {
+    return array[i : H, j : W] sepia_pixel(to_sepia[i, j]) 
+}
+
+read image "sample.png" to to_sep[H, W]
+write image sepia(to_sep) to "sample-sepia.png"

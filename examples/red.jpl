@@ -1,0 +1,10 @@
+type pict = {float,float,float,float}[,]
+
+fn red(W : int, H : int) : pict {
+    let red_image = array[i : H, j : W] {1., 0., 0., 1.}
+    return red_image
+}
+
+let { W, H } = { 800, 600 }
+let r_im = red(W, H)
+write image r_im to "red.png"

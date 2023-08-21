@@ -1,0 +1,23 @@
+type col = {float, float, float, float}
+type pict = col[,]
+
+let {W, H} = {800, 600}
+
+fn isCirclePixel(x : int, y : int, radius: float, thickness: float) : col {
+    let distX = x - W / 2
+    let distY = y - H / 2
+    let dist = distX * distX + distY * distY
+
+    let lowerBound = (radius - thickness / 2.) * (radius - thickness / 2.)
+    let upperBound = (radius + thickness / 2.) * (radius + thickness / 2.)
+    
+    return if (to_float(dist) > lowerBound) && (to_float(dist) < upperBound) then {1., 1., 1., 1.} else {0., 0., 0., 1.}
+}
+
+fn circle(radius: float, thickness: float) : pict {
+    let circle_image = array[i : H, j : W] isCirclePixel(j, i, radius, thickness)
+    return circle_image
+}
+
+let c_im = circle(400.0, 10.0)
+write image c_im to "circle.png"
